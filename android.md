@@ -60,6 +60,15 @@ StringBuffer Sb = new StringBuffer("This is only a")
 1. java.lang.StringBuilder一个可变的字符序列是Java5新增的。此类提供一个与 StringBuffer 兼容的 API，但不保证同步。该类被设计用作 StringBuffer 的一个简易替换，用在字符串缓冲区被单个线程使用的时候（这种情况很普遍）。如果可能，建议优先采用该类，因为在大多数实现中，它比 StringBuffer 要快。两者的方法基本相同。
 
 #### 10、什么导致线程阻塞-58-美团
+- 为了解决对共享存储区的访问冲突，Java引入了同步机制，现在考察多线程对共享资源的访问，显然同步机制已经不够，因为在任意时刻所要求的资源并不一定已经准备好了被访问，反过来，同一时间已经被准备好的资源也不一定是一个。为了解决这个问题，Java引入了对阻塞机制的支持。
+- 阻塞指的是暂停一个线程的执行等待某个条件的发生。
+1. sleep()方法：指定以毫秒为单位的一段时间为参数，使得线程在指定时间内进入阻塞状态，不能得到CPU时间，指定的时间一过，线程重新进入可执行的状态。典型的，sleep()被用在等待某个资源就绪的情况下，测试发现条件不满足后，让线程阻塞一段时间后重新测试，直到条件满足为止；
+2. suspend()和resume()方法：这两个方法要配套使用。suspend()使得线程进入阻塞状态，并且不会自动恢复，必须其对应的resume()被调用，才能使得线程重新进入可执行状态。典型的，suspend()和resume()被用在等待另一个线程产生的结果的情形：测试发现结果还没有产生后，让线程阻塞，另一个线程产生了结果后，调用 resume() 使其恢复。
+3. yield()方法：yield() 使得线程放弃当前分得的 CPU 时间，但是不使线程阻塞，即线程仍处于可执行状态，随时可能再次分得 CPU 时间。调用 yield() 的效果等价于调度程序认为该线程已执行了足够的时间从而转到另一个线程。
+4. wait()和notify()方法：两个方法配套使用，wait()使得线程进入阻塞状态，它有两种形式，一种允许指定以毫秒为单位的一段时间作为参数，另一种没有参数，前者将对应的notify()被调用或者超出指定时间线程重新进入可执行状态，后者则必须对应notify()调用。
+
+初看起来它们与 suspend() 和 resume() 方法对没有什么分别，但是事实上它们是截然不同的。区别的核心在于，前面叙述的所有方法，阻塞时都不会释放占用的锁（如果占用了的话），而这一对方法则相反。
+
 #### 11、多线程同步机制-猎豹
 #### 12、ArrayMap对比HashMap
 #### 13、hashmap和hashtable的区别-乐视-小米-360
@@ -74,6 +83,9 @@ StringBuffer Sb = new StringBuffer("This is only a")
 #### 20、LaunchMode应用场景-百度-小米-乐视
 #### 21、Touch事件传递流程-小米
 #### 22、View绘制流程-百度
+![image](https://github.com/hanhailong/AndroidStudyResources/blob/master/screenshot/view_touch_ignorant.png?raw=true)
+![image](https://github.com/hanhailong/AndroidStudyResources/blob/master/screenshot/view_touch_interested.png?raw=true)
+![image](https://github.com/hanhailong/AndroidStudyResources/blob/master/screenshot/view_touch_interested.png?raw=true)
 #### 23、多线程-360
 #### 24、Handler,Thread和HandlerThread的差别-小米
 #### 25、线程同步-百度
